@@ -16,7 +16,7 @@ provider "aws" {
 
 
 resource "aws_s3_bucket" "b1" {
-  bucket = "gas5-terraform-bucket-test"
+  bucket = "gas5-terraform-bucket-test-flugel"
   acl = "private"
 }
 
