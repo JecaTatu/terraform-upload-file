@@ -14,9 +14,15 @@ provider "aws" {
   region  = var.region
 }
 
+resource "random_string" "random_bucket_name" {
+  length           = 16
+  special          = false
+  upper            = false
+}
+
 
 resource "aws_s3_bucket" "b1" {
-  bucket = "gas5-terraform-bucket-test-flugel"
+  bucket = random_string.random_bucket_name.result
   acl = "private"
 }
 
