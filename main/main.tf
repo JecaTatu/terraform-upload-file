@@ -18,16 +18,20 @@ provider "aws" {
 resource "aws_s3_bucket" "b1" {
   bucket = "gas5-terraform-bucket-test"
   acl = "private"
-
 }
 
-resource "aws_s3_bucket_object" "object" {
-
+resource "aws_s3_bucket_object" "object_1" {
   bucket = aws_s3_bucket.b1.id
-  key    = "new_txt"
+  key    = "test1.txt"
   acl    = "private"
 
-  source = "./text1.txt"
-  etag = filemd5("./text1.txt")
+  content = timestamp()
+}
 
+resource "aws_s3_bucket_object" "object_2" {
+  bucket = aws_s3_bucket.b1.id
+  key    = "test2.txt"
+  acl    = "private"
+
+  content = timestamp()
 }

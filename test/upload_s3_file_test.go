@@ -28,10 +28,13 @@ func TestS3(t *testing.T) {
 
 	bucket_name := terraform.Output(t, terraformOptions, "bucket_name")
 	file1_name := terraform.Output(t, terraformOptions, "file1_name")
+	file2_name := terraform.Output(t, terraformOptions, "file2_name")
 
 	file1_content := aws.GetS3ObjectContents(t, awsRegion, bucket_name, file1_name)
+	file2_content := aws.GetS3ObjectContents(t, awsRegion, bucket_name, file2_name)
 
 	aws.AssertS3BucketExists(t, awsRegion, bucket_name)
 	assert.NotNil(t, file1_content)
+	assert.NotNil(t, file2_content)
 
 }
