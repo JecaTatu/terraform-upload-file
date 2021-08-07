@@ -9,35 +9,42 @@ terraform {
   required_version = ">= 0.14.9"
 }
 
-provider "aws" {
-  profile = "default"
-  region  = var.region
+module "vpc" {
+  source = "../vpc"
+
+  name = "my_test_vpc"
+  region = var.region
 }
 
-resource "random_string" "random_bucket_name" {
-  length           = 16
-  special          = false
-  upper            = false
+module "alb_instance_profile" {
+  source = "../ec2_iam"
+
+  name = "alb-instance-profile"
+  allow_actions = ["ec2:Describe*"]
 }
 
+module "alb" {
+  source = "../alb"
 
-resource "aws_s3_bucket" "b1" {
-  bucket = random_string.random_bucket_name.result
-  acl = "private"
+  name = "ec2-traefik-alb"
+  instance_profile_name = module.alb_instance_profile.name
+  instance_type = "t2.micro"
+  subnets_ids = module.vpc.public_subnets_ids
+  vpc_id = module.vpc.id
 }
 
-resource "aws_s3_bucket_object" "object_1" {
-  bucket = aws_s3_bucket.b1.id
-  key    = "test1.txt"
-  acl    = "private"
-
-  content = timestamp()
+module "s3" {
+  source = "../s3"
 }
 
-resource "aws_s3_bucket_object" "object_2" {
-  bucket = aws_s3_bucket.b1.id
-  key    = "test2.txt"
-  acl    = "private"
+module "ec2_cluster" {
+  source = "../ec2_cluster"
 
-  content = timestamp()
+  instance_profile_name = module.alb_instance_profile.name
+  cluster_name = "tags-cluster"
+  instance_count = 2
+  subnets_ids = module.vpc.public_subnets_ids
+  vpc_id = module.vpc.id
+  instance_type = "t2.micro"
+  lb_security_group = module.alb.security_group_id
 }

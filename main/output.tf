@@ -1,14 +1,7 @@
-output "bucket_name" {
-  description = "bucket name."
-  value = aws_s3_bucket.b1.bucket
+output "instances_ids" {
+  value = module.ec2_cluster.instance_id
 }
 
-output "file1_name" {
-  description = "file 1 name."
-  value = aws_s3_bucket_object.object_1.key
-}
-
-output "file2_name" {
-  description = "file 2 name."
-  value = aws_s3_bucket_object.object_2.key
+output "lb_public_ip" {
+  value = module.alb.public_ip
 }
