@@ -1,0 +1,26 @@
+[log]
+  level = "DEBUG"
+
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+
+  [entryPoints.web.http.redirections.entryPoint]
+    to = "websecure"
+    scheme = "https"
+
+  [entryPoints.websecure]
+    address = ":443"
+
+[certificatesResolvers.letsencrypt.acme]
+  email = "gas5@cin.ufpe.br"
+  storage = "/letsencrypt/acme.json"
+  [certificatesResolvers.letsencrypt.acme.tlsChallenge]
+
+[api]
+  entryPoint = "traefik"
+  dashboard = true
+
+[providers.docker]
+  exposedByDefault = false
+  network = "traefik-global-proxy"
