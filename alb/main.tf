@@ -19,6 +19,14 @@ resource "aws_security_group" "allow_alb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    description = "Allows connection to LB"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -35,16 +43,6 @@ resource "random_id" "lb" {
   byte_length = 3
 }
 
-data "aws_ami" "amazon_linux_2" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-ebs"]
-  }
-}
-
 module "loadbalancer" {
   source                 = "terraform-aws-modules/ec2-instance/aws"
   version = "2.19.0"
@@ -53,7 +51,7 @@ module "loadbalancer" {
   instance_count         = 1
   iam_instance_profile   = var.instance_profile_name
 
-  ami                    = data.aws_ami.amazon_linux_2.id
+  ami                    = "ami-0b3c7f9debcd1485a"
   instance_type          = var.instance_type
   monitoring             = true
   vpc_security_group_ids = [aws_security_group.allow_alb.id]
