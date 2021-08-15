@@ -51,9 +51,10 @@ module "loadbalancer" {
   instance_count         = 1
   iam_instance_profile   = var.instance_profile_name
 
-  ami                    = "ami-0b3c7f9debcd1485a"
+  ami                    = "ami-09625c75c05745259"
   instance_type          = var.instance_type
   monitoring             = true
+  key_name = "gas"
   vpc_security_group_ids = [aws_security_group.allow_alb.id]
   subnet_ids              = var.subnets_ids
   associate_public_ip_address = true
